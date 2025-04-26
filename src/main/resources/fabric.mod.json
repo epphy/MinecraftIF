@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "mif",
+  "version": "${version}",
+  "name": "MinecraftIF",
+  "description": "Enhances your overall experience in your minecraft world.",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/mif/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "com.mif.mif.client.MinecraftIFModDataGenerator"
+    ],
+    "client": [
+      "com.mif.mif.client.MinecraftIFModClient"
+    ],
+    "main": [
+      "com.mif.mif.MinecraftIFMod"
+    ]
+  },
+  "mixins": [
+    "mif.mixins.json",
+    {
+      "config": "mif.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
