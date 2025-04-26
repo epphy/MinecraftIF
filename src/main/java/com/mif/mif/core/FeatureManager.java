@@ -1,28 +1,70 @@
 package com.mif.mif.core;
 
+import com.mif.mif.core.feature.addon.Addon;
+import com.mif.mif.core.feature.addon.AddonManager;
+import com.mif.mif.core.feature.addon.AddonType;
+import com.mif.mif.core.feature.fix.Fix;
+import com.mif.mif.core.feature.fix.FixManager;
+import com.mif.mif.core.feature.fix.FixType;
+import com.mif.mif.util.MIFLogger;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.EnumMap;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FeatureManager {
-    private static final EnumMap<FeatureType, IFeature> FEATURES = new EnumMap<>(FeatureType.class);
+    private static FeatureManager instance;
+    private AddonManager addonManager;
+    private FixManager fixManager;
 
-    public boolean addFeature(@NotNull FeatureType featureType, @NotNull IFeature feature) {
-        final boolean absent = !isFeatureRegistered(featureType);
-        if (absent) FEATURES.put(featureType, feature);
-        return absent;
+    public static FeatureManager getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("Not initialized yet");
+        }
+        return instance;
     }
 
-    public boolean removeFeature(@NotNull FeatureType featureType) {
-        final boolean present = isFeatureRegistered(featureType);
-        if (present) FEATURES.remove(featureType);
-        return present;
+    public static void init() {
+        if (instance == null) {
+            instance = new FeatureManager();
+        }
+
+        instance.addonManager = new AddonManager();
+        instance.fixManager = new FixManager();
+
+        // Here we register all features using the config
+        MIFLogger.info(instance, "initialized");
     }
 
-    public boolean isFeatureRegistered(@NotNull FeatureType featureType) {
-        return FEATURES.containsKey(featureType);
+    public void refresh() {
+        // Here we refresh all features using the updated config
+    }
+
+    public void unload() {
+        instance = null;
+    }
+
+    public boolean addFix(@NotNull FixType fixType, @NotNull Fix fix) {
+        return fixManager.addFix(fixType, fix);
+    }
+
+    public boolean addAddon(@NotNull AddonType addonType, @NotNull Addon addon) {
+        return addonManager.addAddon(addonType, addon);
+    }
+
+    public boolean removeFix(@NotNull FixType fixType) {
+        return fixManager.removeFix(fixType);
+    }
+
+    public boolean removeAddon(@NotNull AddonType addonType) {
+        return addonManager.removeAddon(addonType);
+    }
+
+    public boolean isFixEnabled(@NotNull FixType fixType) {
+        return fixManager.hasFix(fixType);
+    }
+
+    public boolean isAddonEnabled(@NotNull AddonType addonType) {
+        return addonManager.hasAddon(addonType);
     }
 }
