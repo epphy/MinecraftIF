@@ -1,4 +1,4 @@
-package com.mif.mif.core;
+package com.mif.mif.core.feature;
 
 public enum FeatureType {
     ADDON, FIX

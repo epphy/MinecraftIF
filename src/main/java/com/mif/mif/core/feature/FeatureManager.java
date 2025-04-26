@@ -1,4 +1,4 @@
-package com.mif.mif.core;
+package com.mif.mif.core.feature;
 
 import com.mif.mif.core.feature.addon.Addon;
 import com.mif.mif.core.feature.addon.AddonManager;
@@ -11,9 +11,12 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FeatureManager {
     private static FeatureManager instance;
+    private final Set<Feature> enabledFeatures;
     private AddonManager addonManager;
     private FixManager fixManager;
 
