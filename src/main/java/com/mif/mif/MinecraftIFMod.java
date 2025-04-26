@@ -1,8 +1,6 @@
 package com.mif.mif;
 
 import com.mif.mif.config.ConfigManager;
-import com.mif.mif.core.feature.FeatureContext;
-import com.mif.mif.core.feature.FeatureId;
 import com.mif.mif.core.feature.FeatureManager;
 import com.mif.mif.core.feature.FeatureRegistry;
 import com.mif.mif.util.MIFLogger;

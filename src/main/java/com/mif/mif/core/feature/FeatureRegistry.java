@@ -10,15 +10,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FeatureRegistry {
-    private static final Map<FeatureId, FeatureFactory<Feature>> REGISTERED_FEATURES = new HashMap<>();
+    private static final Map<FeatureId, Supplier<Feature>> REGISTERED_FEATURES = new HashMap<>();
     private static FeatureRegistry instance;
 
     public static FeatureRegistry getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("Not initialized yet");
+            throw new IllegalStateException("FeatureRegistry has not been initialized yet");
         }
         return instance;
     }
@@ -38,14 +39,14 @@ public final class FeatureRegistry {
         // Addons
         registerFeature(FeatureId.CREEPER_ANTI_GRIEF_ADDON, featureContext -> {
             final var addon = new CreeperAntiGriefAddon();
-            addon.enable(featureContext);
+            addon.enable();
             return addon;
         });
     }
 
-    public boolean registerFeature(@NotNull FeatureId featureId, @NotNull FeatureFactory<Feature> featureFactory) {
+    public boolean registerFeature(@NotNull FeatureId featureId, @NotNull Supplier<Feature> featureSupplier) {
         final boolean absent = !isFeatureRegistered(featureId);
-        if (absent) REGISTERED_FEATURES.put(featureId, featureFactory);
+        if (absent) REGISTERED_FEATURES.put(featureId, featureSupplier);
         return absent;
     }
 
@@ -55,9 +56,8 @@ public final class FeatureRegistry {
         return present;
     }
 
-    public Optional<Feature> getFeature(@NotNull FeatureId featureId, @NotNull FeatureContext featureContext) {
-        return Optional.ofNullable(REGISTERED_FEATURES.get(featureId))
-                .map(featureFeatureFactory -> featureFeatureFactory.create(featureContext));
+    public Optional<Feature> getFeature(@NotNull FeatureId featureId) {
+        return Optional.ofNullable(REGISTERED_FEATURES.get(featureId)).map(Supplier::get);
     }
 
     public boolean isFeatureRegistered(@NotNull FeatureId featureId) {

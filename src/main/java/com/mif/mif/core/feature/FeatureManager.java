@@ -15,7 +15,7 @@ public final class FeatureManager {
 
     public static FeatureManager getInstance() {
         if (instance == null) {
-            MIFLogger.error("FeatureManager", "Not initialized yet");
+            throw new IllegalStateException("FeatureManager has not been initialized yet");
         }
         return instance;
     }
@@ -29,21 +29,25 @@ public final class FeatureManager {
         MIFLogger.info(instance, "initialized");
     }
 
-    // Todo; for every setting its own context
     public void loadFeaturesFromConfig() {
-        for (final Map.Entry<FeatureId, Boolean> feature : ConfigManager.getInstance().getConfig().getEnabledFeatures().entrySet()) {
-            if (feature.getValue()) addFeature(feature.getKey(), new FeatureContext());
+        for (final Map.Entry<FeatureId, Boolean> feature : ConfigManager.getInstance().getServerConfig().getEnabledFeatures().entrySet()) {
+            if (feature.getValue()) addFeature(feature.getKey());
         }
     }
 
-    public boolean addFeature(@NotNull FeatureId featureId, @NotNull FeatureContext featureContext) {
+    public boolean updateFeatureState(@NotNull FeatureId featureId, boolean enabled) {
+        if (enabled) return addFeature(featureId);
+        else return removeFeature(featureId);
+    }
+
+    public boolean addFeature(@NotNull FeatureId featureId) {
         final boolean absent = !isFeatureEnabled(featureId);
         if (!absent) return false;
 
-        final Optional<Feature> optionalFeature = FeatureRegistry.getInstance().getFeature(featureId, featureContext);
+        final Optional<Feature> optionalFeature = FeatureRegistry.getInstance().getFeature(featureId);
         if (optionalFeature.isEmpty()) return false;
 
-        optionalFeature.get().enable(featureContext);
+        optionalFeature.get().enable();
         features.put(featureId, optionalFeature.get());
         return true;
     }

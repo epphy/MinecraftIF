@@ -1,6 +1,6 @@
 package com.mif.mif.client.config;
 
-import com.mif.mif.config.Config;
+import com.mif.mif.config.ServerConfig;
 import com.mif.mif.core.feature.FeatureId;
 import lombok.RequiredArgsConstructor;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public final class ConfigScreenBuilder {
-    private final Config config;
+    private final ServerConfig serverConfig;
 
     public Screen createConfigScreen(Screen parent) {
         final ConfigBuilder builder = ConfigBuilder.create()
@@ -22,13 +22,13 @@ public final class ConfigScreenBuilder {
         final ConfigCategory category = builder
                 .getOrCreateCategory(Text.translatable("mif.config.category.features"));
 
-        for (final Map.Entry<FeatureId, Boolean> entry : config.getEnabledFeatures().entrySet()) {
+        for (final Map.Entry<FeatureId, Boolean> entry : serverConfig.getEnabledFeatures().entrySet()) {
             final FeatureId featureId = entry.getKey();
             category.addEntry(builder.entryBuilder()
-                    .startBooleanToggle(Text.of(featureId.name().toLowerCase()), config.isFeatureEnabled(featureId))
+                    .startBooleanToggle(Text.of(featureId.name().toLowerCase()), serverConfig.isFeatureEnabled(featureId))
                     .setSaveConsumer(newValue -> {
-                        config.setFeatureEnabled(entry.getKey(), newValue);
-                        config.save();
+                        serverConfig.setFeatureEnabled(entry.getKey(), newValue);
+                        serverConfig.save();
                     })
                     .build());
         }

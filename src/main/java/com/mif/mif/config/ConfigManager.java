@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConfigManager {
     private static ConfigManager instance;
-    private Config config;
+    private ServerConfig serverConfig;
 
     public static ConfigManager getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("Not initialized yet");
+            throw new IllegalStateException("ConfigManager has not been initialized yet");
         }
         return instance;
     }
@@ -23,8 +23,8 @@ public final class ConfigManager {
             instance = new ConfigManager();
         }
 
-        instance.config = new Config();
-        instance.config.init();
+        instance.serverConfig = new ServerConfig();
+        instance.serverConfig.init();
 
         MIFLogger.info(instance, "initialized");
     }
