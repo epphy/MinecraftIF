@@ -34,14 +34,8 @@ public final class FeatureRegistry {
     }
 
     private void registerAllFeatures() {
-        // Fixes
-
-        // Addons
-        registerFeature(FeatureId.CREEPER_ANTI_GRIEF_ADDON, featureContext -> {
-            final var addon = new CreeperAntiGriefAddon();
-            addon.enable();
-            return addon;
-        });
+        registerFeature(FeatureId.CREEPER_ANTI_GRIEF_ADDON, CreeperAntiGriefAddon::new);
+        MIFLogger.info(this, "All features have been registered");
     }
 
     public boolean registerFeature(@NotNull FeatureId featureId, @NotNull Supplier<Feature> featureSupplier) {
