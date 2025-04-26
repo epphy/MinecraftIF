@@ -1,5 +1,6 @@
 package com.mif.mif.core.feature.mixin.addon.creeperexplosiongrief;
 
+import com.mif.mif.core.feature.addon.creeperexplosiongrief.CreeperAntiGriefAddon;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
@@ -18,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerWorld.class)
-public abstract class CreeperExplosionGriefMixin {
+public abstract class CreeperAntiGriefAddonMixin {
 
     @Unique
     private static final ThreadLocal<Boolean> CUSTOM_EXPLOSION = ThreadLocal.withInitial(() -> false);
@@ -28,7 +29,7 @@ public abstract class CreeperExplosionGriefMixin {
     @Inject(method = "createExplosion", at = @At("HEAD"), cancellable = true)
     private void preventBlockDamage(Entity entity, DamageSource damageSource, ExplosionBehavior behavior, double x, double y, double z, float power, boolean createFire, World.ExplosionSourceType explosionSourceType, ParticleEffect smallParticle, ParticleEffect largeParticle, RegistryEntry<SoundEvent> soundEvent, CallbackInfo ci) {
         if (CUSTOM_EXPLOSION.get()) return;
-        if () return; // Add a flag here
+        if (!CreeperAntiGriefAddon.isActive()) return;
         if (entity.getType() != EntityType.CREEPER) return;
 
         CUSTOM_EXPLOSION.set(true);

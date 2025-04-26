@@ -18,6 +18,9 @@
     ],
     "main": [
       "com.mif.mif.MinecraftIFMod"
+    ],
+    "modmenu": [
+      "com.mif.mif.client.config.ModMenuIntegration"
     ]
   },
   "mixins": [

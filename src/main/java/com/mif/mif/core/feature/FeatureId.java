@@ -1,5 +1,5 @@
 package com.mif.mif.core.feature;
 
-public interface FeatureId {
-    String getId();
+public enum FeatureId {
+    CREEPER_ANTI_GRIEF_ADDON
 }

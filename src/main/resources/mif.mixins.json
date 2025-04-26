@@ -4,7 +4,7 @@
   "package": "com.mif.mif.core.feature.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "addon.creeperexplosiongrief.CreeperExplosionGriefMixin"
+    "addon.creeperexplosiongrief.CreeperAntiGriefAddonMixin"
   ],
   "injectors": {
     "defaultRequire": 1

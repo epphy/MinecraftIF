@@ -1,6 +1,10 @@
 package com.mif.mif;
 
+import com.mif.mif.config.ConfigManager;
+import com.mif.mif.core.feature.FeatureContext;
+import com.mif.mif.core.feature.FeatureId;
 import com.mif.mif.core.feature.FeatureManager;
+import com.mif.mif.core.feature.FeatureRegistry;
 import com.mif.mif.util.MIFLogger;
 import net.fabricmc.api.ModInitializer;
 
@@ -9,11 +13,21 @@ public class MinecraftIFMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        initializeFeatureManager();
+        initializeRegistry();
+        initializeConfig();
+        initializeFeatures();
         printWelcome();
     }
 
-    private void initializeFeatureManager() {
+    private void initializeRegistry() {
+        FeatureRegistry.init();
+    }
+
+    private void initializeConfig() {
+        ConfigManager.init();
+    }
+
+    private void initializeFeatures() {
         FeatureManager.init();
     }
 
