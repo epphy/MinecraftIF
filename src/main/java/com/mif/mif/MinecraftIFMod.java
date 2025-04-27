@@ -4,13 +4,17 @@ import com.mif.mif.config.ConfigManager;
 import com.mif.mif.core.feature.FeatureManager;
 import com.mif.mif.core.feature.FeatureRegistry;
 import com.mif.mif.util.MIFLogger;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
+import org.slf4j.event.Level;
 
 public class MinecraftIFMod implements ModInitializer {
     private static final String MOD_ID = "mif";
 
     @Override
     public void onInitialize() {
+        MIFLogger.setCurrentLevel(Level.DEBUG);
         initializeRegistry();
         initializeConfig();
         initializeFeatures();
@@ -43,5 +47,9 @@ public class MinecraftIFMod implements ModInitializer {
 
     public static String getModId() {
         return MOD_ID;
+    }
+
+    public static boolean isServer() {
+        return FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
     }
 }

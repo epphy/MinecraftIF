@@ -1,5 +1,6 @@
 package com.mif.mif.core.feature;
 
+import com.mif.mif.MinecraftIFMod;
 import com.mif.mif.config.ConfigManager;
 import com.mif.mif.util.MIFLogger;
 import lombok.AccessLevel;
@@ -10,6 +11,7 @@ import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FeatureManager {
+
     private static FeatureManager instance;
     private final Map<FeatureId, Feature> features = new HashMap<>();
 
@@ -30,9 +32,54 @@ public final class FeatureManager {
     }
 
     public void loadFeaturesFromConfig() {
-        for (final Map.Entry<FeatureId, Boolean> feature : ConfigManager.getInstance().getServerConfig().getEnabledFeatures().entrySet()) {
-            if (feature.getValue()) addFeature(feature.getKey());
+        int loaded = 0;
+
+        if (MinecraftIFMod.isServer()) {
+            final Set<Map.Entry<FeatureId, Boolean>> featureEntries = ConfigManager.getInstance().getServerConfig().getEnabledFeatures().entrySet();
+
+            for (final Map.Entry<FeatureId, Boolean> feature : featureEntries) {
+                if (!feature.getValue()) continue;
+
+                final FeatureId featureId = feature.getKey();
+                final Optional<Feature> optionalFeature = FeatureRegistry.getInstance().getFeature(featureId);
+
+                if (optionalFeature.isEmpty()) {
+                    MIFLogger.warn(this, "Tried to log an unknown feature: %s".formatted(featureId.name()));
+                    continue;
+                }
+
+                if (!addFeature(featureId)) {
+                    MIFLogger.warn(this, "Failed to load a feature '%s' from config".formatted(featureId.name()));
+                    continue;
+                }
+
+                loaded++;
+            }
+
+            MIFLogger.debug(this, "Successfully loaded %d/%d features from config in total".formatted(loaded, features.size()));
+            return;
         }
+
+        for (final Map.Entry<FeatureId, Boolean> feature : ConfigManager.getInstance().getClientConfig().getEnabledFeatures().entrySet()) {
+            if (!feature.getValue()) continue;
+
+            final FeatureId featureId = feature.getKey();
+            final Optional<Feature> optionalFeature = FeatureRegistry.getInstance().getFeature(featureId);
+
+            if (optionalFeature.isEmpty()) {
+                MIFLogger.warn(this, "Tried to log an unknown feature: %s".formatted(featureId.name()));
+                continue;
+            }
+
+            if (!addFeature(featureId)) {
+                MIFLogger.warn(this, "Failed to load a feature '%s' from config".formatted(featureId.name()));
+                continue;
+            }
+
+            loaded++;
+        }
+
+        MIFLogger.debug(this, "Successfully loaded %d/%d features from config in total".formatted(loaded, features.size()));
     }
 
     public boolean updateFeatureState(@NotNull FeatureId featureId, boolean enabled) {
@@ -42,22 +89,33 @@ public final class FeatureManager {
 
     public boolean addFeature(@NotNull FeatureId featureId) {
         final boolean absent = !isFeatureEnabled(featureId);
-        if (!absent) return false;
+        if (!absent){
+            MIFLogger.warn(this, "Could not enable feature '%s' because it is already enabled".formatted(featureId.name()));
+            return false;
+        }
 
         final Optional<Feature> optionalFeature = FeatureRegistry.getInstance().getFeature(featureId);
-        if (optionalFeature.isEmpty()) return false;
+        if (optionalFeature.isEmpty()) {
+            MIFLogger.debug(this, "Could not enable feature '%s' because its supplier is corrupted".formatted(featureId.name()));
+            return false;
+        }
 
         optionalFeature.get().enable();
         features.put(featureId, optionalFeature.get());
+        MIFLogger.debug(this, "Enabled feature: %s".formatted(featureId.name()));
         return true;
     }
 
     public boolean removeFeature(@NotNull FeatureId featureId) {
         final boolean present = isFeatureEnabled(featureId);
-        if (!present) return false;
+        if (!present) {
+            MIFLogger.warn(this, "Could not disable feature '%s' because it is not enabled".formatted(featureId.name()));
+            return false;
+        }
 
         features.get(featureId).disable();
         features.remove(featureId);
+        MIFLogger.debug(this, "Disabled feature: %s".formatted(featureId.name()));
         return true;
     }
 

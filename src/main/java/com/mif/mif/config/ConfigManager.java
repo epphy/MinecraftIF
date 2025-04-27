@@ -4,12 +4,16 @@ import com.mif.mif.util.MIFLogger;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConfigManager {
+
     private static ConfigManager instance;
     private ServerConfig serverConfig;
+    private ClientConfig clientConfig;
 
     public static ConfigManager getInstance() {
         if (instance == null) {
@@ -23,10 +27,19 @@ public final class ConfigManager {
             instance = new ConfigManager();
         }
 
-        instance.serverConfig = new ServerConfig();
-        instance.serverConfig.init();
-
-        MIFLogger.info(instance, "initialized");
+        instance.loadCertainConfigs();
+        MIFLogger.info(instance, "ConfigManager initialized");
     }
 
+    private void loadCertainConfigs() {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            MIFLogger.info(this, "Loading client config...");
+            clientConfig = new ClientConfig();
+            clientConfig.init();
+            return;
+        }
+        MIFLogger.info(this, "Loading server config...");
+        serverConfig = new ServerConfig();
+        serverConfig.init();
+    }
 }
