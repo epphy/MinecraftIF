@@ -44,19 +44,19 @@ public final class FeatureManager {
                 final Optional<Feature> optionalFeature = FeatureRegistry.getInstance().getFeature(featureId);
 
                 if (optionalFeature.isEmpty()) {
-                    MIFLogger.warn(this, "Tried to log an unknown feature: %s".formatted(featureId.name()));
+                    MIFLogger.warn(this, "Tried to enable an unknown feature: %s".formatted(featureId.name()));
                     continue;
                 }
 
                 if (!addFeature(featureId)) {
-                    MIFLogger.warn(this, "Failed to load a feature '%s' from config".formatted(featureId.name()));
+                    MIFLogger.warn(this, "Failed to enable a feature '%s' from config".formatted(featureId.name()));
                     continue;
                 }
 
                 loaded++;
             }
 
-            MIFLogger.debug(this, "Successfully loaded %d/%d features from config in total".formatted(loaded, features.size()));
+            MIFLogger.debug(this, "Successfully enabled %d/%d features from config in total".formatted(loaded, features.size()));
             return;
         }
 
@@ -67,19 +67,19 @@ public final class FeatureManager {
             final Optional<Feature> optionalFeature = FeatureRegistry.getInstance().getFeature(featureId);
 
             if (optionalFeature.isEmpty()) {
-                MIFLogger.warn(this, "Tried to log an unknown feature: %s".formatted(featureId.name()));
+                MIFLogger.warn(this, "Tried to enable an unknown feature: %s".formatted(featureId.name()));
                 continue;
             }
 
             if (!addFeature(featureId)) {
-                MIFLogger.warn(this, "Failed to load a feature '%s' from config".formatted(featureId.name()));
+                MIFLogger.warn(this, "Failed to enable a feature '%s' from config".formatted(featureId.name()));
                 continue;
             }
 
             loaded++;
         }
 
-        MIFLogger.debug(this, "Successfully loaded %d/%d features from config in total".formatted(loaded, features.size()));
+        MIFLogger.debug(this, "Successfully enabled %d/%d features from config in total".formatted(loaded, features.size()));
     }
 
     public boolean updateFeatureState(@NotNull FeatureId featureId, boolean enabled) {

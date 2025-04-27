@@ -8,12 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
-@Setter
 @UtilityClass
 public class MIFLogger {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MinecraftIFMod.getModId());
     private static final String TEMPLATE = "[{}] {}: {}";
+
+    @Setter
     private static Level currentLevel = Level.WARN;
 
     public void announce(@NotNull String message) {

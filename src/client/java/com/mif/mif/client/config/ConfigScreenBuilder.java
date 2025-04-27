@@ -20,6 +20,7 @@ Todo:
 
 @RequiredArgsConstructor
 public final class ConfigScreenBuilder {
+
     private final ClientConfig clientConfig;
 
     public Screen createConfigScreen(Screen parent) {

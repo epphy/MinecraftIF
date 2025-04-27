@@ -52,7 +52,9 @@ public final class ServerConfig implements Config {
             final Map<FeatureId, Boolean> tempData = GSON.fromJson(reader, TYPE_TOKEN);
             if (tempData == null) return;
             enabledFeatures.clear();
-            enabledFeatures.putAll(tempData);
+            for (final Map.Entry<FeatureId, Boolean> entry : tempData.entrySet()) {
+                setFeatureEnabled(entry.getKey(), entry.getValue());
+            }
         } catch (IOException e) {
             throw new RuntimeException("ServerConfig failed to read config", e);
         }

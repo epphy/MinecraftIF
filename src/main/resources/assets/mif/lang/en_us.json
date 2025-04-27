@@ -2,5 +2,7 @@
   "mif.config.title": "MinecraftIF Configuration",
   "mif.config.category.features": "Features",
   "mif.config.category.addons": "Addons",
-  "mif.config.category.fixes": "Fixes"
+  "mif.config.category.fixes": "Fixes",
+  "mif.command.config.reload": "MIF Server config reloaded!",
+  "mif.command.config.reload.server_only": "This command can be run on a server only"
 }
