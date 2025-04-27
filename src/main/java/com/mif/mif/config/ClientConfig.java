@@ -13,11 +13,11 @@ import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.Map;
 
-// Todo make sure it works in single world and multiplayer
-public final class ServerConfig implements Config {
+public final class ClientConfig implements Config {
+
     private static final Gson GSON = new Gson();
     private static final TypeToken<Map<FeatureId, Boolean>> TYPE_TOKEN = new TypeToken<>(){};
-    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("mif_server_config.json");
+    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("mif_client_config.json");
     private final Map<FeatureId, Boolean> enabledFeatures = new EnumMap<>(FeatureId.class);
     private File file;
 
@@ -34,7 +34,7 @@ public final class ServerConfig implements Config {
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(GSON.toJson(enabledFeatures));
         } catch (IOException e) {
-            throw new RuntimeException("ServerConfig failed to write to config", e);
+            throw new RuntimeException("Failed to write to config", e);
         }
     }
 
@@ -46,7 +46,7 @@ public final class ServerConfig implements Config {
                 enabledFeatures.clear();
                 enabledFeatures.putAll(tempData);
             } catch (IOException e) {
-                throw new RuntimeException("ServerConfig failed to read config", e);
+                throw new RuntimeException("Failed to read config", e);
             }
         }
 
@@ -54,7 +54,7 @@ public final class ServerConfig implements Config {
     }
 
     public void upToDateData() {
-        for (final FeatureId featureId : FeatureRegistry.getInstance().getAllServerFeatureIds()) {
+        for (final FeatureId featureId : FeatureRegistry.getInstance().getAllFeatureIds()) {
             enabledFeatures.putIfAbsent(featureId, false);
         }
     }
@@ -76,4 +76,5 @@ public final class ServerConfig implements Config {
     public Map<FeatureId, Boolean> getEnabledFeatures() {
         return Map.copyOf(enabledFeatures);
     }
+
 }

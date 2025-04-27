@@ -1,11 +1,12 @@
 package com.mif.mif.core.feature.addon.creeperexplosiongrief;
 
 import com.mif.mif.core.feature.FeatureId;
+import com.mif.mif.core.feature.ServerFeature;
 import com.mif.mif.core.feature.addon.Addon;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public final class CreeperAntiGriefAddon implements Addon {
+public final class CreeperAntiGriefAddon implements Addon, ServerFeature {
     private static boolean active = false;
 
     @Override

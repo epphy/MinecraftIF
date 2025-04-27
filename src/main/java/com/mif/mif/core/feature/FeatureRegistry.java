@@ -6,10 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -61,5 +58,27 @@ public final class FeatureRegistry {
     @NotNull
     public Set<FeatureId> getAllFeatureIds() {
         return Set.copyOf(REGISTERED_FEATURES.keySet());
+    }
+
+    @NotNull
+    public Set<FeatureId> getAllServerFeatureIds() {
+        final Set<FeatureId> result = new HashSet<>();
+        for (final Map.Entry<FeatureId, Supplier<Feature>> entry : REGISTERED_FEATURES.entrySet()) {
+            if (entry.getValue().get() instanceof ServerFeature) {
+                result.add(entry.getKey());
+            }
+        }
+        return Set.copyOf(result);
+    }
+
+    @NotNull
+    public Set<FeatureId> getAllClientFeatureIds() {
+        final Set<FeatureId> result = new HashSet<>();
+        for (final Map.Entry<FeatureId, Supplier<Feature>> entry : REGISTERED_FEATURES.entrySet()) {
+            if (entry.getValue().get() instanceof ClientFeature) {
+                result.add(entry.getKey());
+            }
+        }
+        return Set.copyOf(result);
     }
 }
