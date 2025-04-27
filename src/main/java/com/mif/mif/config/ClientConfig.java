@@ -26,7 +26,8 @@ public final class ClientConfig implements Config {
     public void init() {
         initFile();
         load();
-        MIFLogger.debug(this, "Loaded config with following parameters: %s".formatted(enabledFeatures));
+        upToDateData();
+        MIFLogger.warn(this, "Loaded config with following parameters: %s".formatted(enabledFeatures));
     }
 
     private void initFile() {
@@ -35,7 +36,7 @@ public final class ClientConfig implements Config {
         }
 
         if (!file.exists()) {
-            upToDateData();
+            save();
         }
     }
 
@@ -62,7 +63,6 @@ public final class ClientConfig implements Config {
         for (final FeatureId featureId : FeatureRegistry.getInstance().getAllFeatureIds()) {
             enabledFeatures.putIfAbsent(featureId, false);
         }
-        save();
     }
 
     public void setFeatureEnabled(@NotNull FeatureId featureId, boolean enabled) {

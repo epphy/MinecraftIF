@@ -1,6 +1,7 @@
 package com.mif.mif.core.feature;
 
 import com.mif.mif.core.feature.addon.creeperexplosiongrief.CreeperAntiGriefAddon;
+import com.mif.mif.core.feature.fix.mifdebug.DebuggerFlag;
 import com.mif.mif.util.MIFLogger;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -37,13 +38,19 @@ public final class FeatureRegistry {
 
     public boolean registerFeature(@NotNull FeatureId featureId, @NotNull Supplier<Feature> featureSupplier) {
         final boolean absent = !isFeatureRegistered(featureId);
-        if (absent) REGISTERED_FEATURES.put(featureId, featureSupplier);
+        if (absent) {
+            REGISTERED_FEATURES.put(featureId, featureSupplier);
+            MIFLogger.debug(this, "Registered new feature: %s".formatted(featureId.name()));
+        }
         return absent;
     }
 
     public boolean unregisterFeature(@NotNull FeatureId featureId) {
         final boolean present = isFeatureRegistered(featureId);
-        if (present) REGISTERED_FEATURES.remove(featureId);
+        if (present) {
+            REGISTERED_FEATURES.remove(featureId);
+            MIFLogger.debug(this, "Unregistered feature: %s".formatted(featureId.name()));
+        }
         return present;
     }
 

@@ -1,7 +1,5 @@
 package com.mif.mif.core.feature;
 
-import com.mif.mif.MinecraftIFMod;
-import com.mif.mif.config.ConfigManager;
 import com.mif.mif.util.MIFLogger;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -27,59 +25,7 @@ public final class FeatureManager {
             instance = new FeatureManager();
         }
 
-        instance.loadFeaturesFromConfig();
         MIFLogger.info(instance, "initialized");
-    }
-
-    public void loadFeaturesFromConfig() {
-        int loaded = 0;
-
-        if (MinecraftIFMod.isServer()) {
-            final Set<Map.Entry<FeatureId, Boolean>> featureEntries = ConfigManager.getInstance().getServerConfig().getEnabledFeatures().entrySet();
-
-            for (final Map.Entry<FeatureId, Boolean> feature : featureEntries) {
-                if (!feature.getValue()) continue;
-
-                final FeatureId featureId = feature.getKey();
-                final Optional<Feature> optionalFeature = FeatureRegistry.getInstance().getFeature(featureId);
-
-                if (optionalFeature.isEmpty()) {
-                    MIFLogger.warn(this, "Tried to enable an unknown feature: %s".formatted(featureId.name()));
-                    continue;
-                }
-
-                if (!addFeature(featureId)) {
-                    MIFLogger.warn(this, "Failed to enable a feature '%s' from config".formatted(featureId.name()));
-                    continue;
-                }
-
-                loaded++;
-            }
-
-            MIFLogger.debug(this, "Successfully enabled %d/%d features from config in total".formatted(loaded, features.size()));
-            return;
-        }
-
-        for (final Map.Entry<FeatureId, Boolean> feature : ConfigManager.getInstance().getClientConfig().getEnabledFeatures().entrySet()) {
-            if (!feature.getValue()) continue;
-
-            final FeatureId featureId = feature.getKey();
-            final Optional<Feature> optionalFeature = FeatureRegistry.getInstance().getFeature(featureId);
-
-            if (optionalFeature.isEmpty()) {
-                MIFLogger.warn(this, "Tried to enable an unknown feature: %s".formatted(featureId.name()));
-                continue;
-            }
-
-            if (!addFeature(featureId)) {
-                MIFLogger.warn(this, "Failed to enable a feature '%s' from config".formatted(featureId.name()));
-                continue;
-            }
-
-            loaded++;
-        }
-
-        MIFLogger.debug(this, "Successfully enabled %d/%d features from config in total".formatted(loaded, features.size()));
     }
 
     public boolean updateFeatureState(@NotNull FeatureId featureId, boolean enabled) {

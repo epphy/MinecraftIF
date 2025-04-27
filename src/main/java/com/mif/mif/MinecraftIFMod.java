@@ -24,25 +24,29 @@ public class MinecraftIFMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        MIFLogger.setCurrentLevel(Level.DEBUG); // Todo; add debug switch in mod-menu
+        setupLogger();
         initializeRegistry();
-        initializeConfig();
         initializeFeatures();
+        initializeConfig();
         registerCommands();
         checkVersion();
         printWelcome();
+    }
+
+    private void setupLogger() {
+        MIFLogger.setCurrentLevel(Level.DEBUG);
     }
 
     private void initializeRegistry() {
         FeatureRegistry.init();
     }
 
-    private void initializeConfig() {
-        ConfigManager.init();
-    }
-
     private void initializeFeatures() {
         FeatureManager.init();
+    }
+
+    private void initializeConfig() {
+        ConfigManager.init();
     }
 
     private void registerCommands() {
