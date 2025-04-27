@@ -12,12 +12,12 @@ import java.io.*;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
+// Todo make sure it works in single world and multiplayer
 public class ServerConfig implements Config {
     private static final Gson GSON = new Gson();
     private static final TypeToken<Map<FeatureId, Boolean>> TYPE_TOKEN = new TypeToken<>(){};
-    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("mif_config.json");
+    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("mif_server_config.json");
     private final Map<FeatureId, Boolean> enabledFeatures = new HashMap<>();
     private File file;
 
@@ -50,35 +50,30 @@ public class ServerConfig implements Config {
             }
         }
 
-        upToDateFeatures();
+        upToDateData();
     }
 
-    private void upToDateFeatures() {
+    public void upToDateData() {
         for (final FeatureId featureId : FeatureRegistry.getInstance().getAllFeatureIds()) {
             enabledFeatures.putIfAbsent(featureId, false);
         }
     }
 
-    // Todo; more graceful approach to saving
     public void setFeatureEnabled(@NotNull FeatureId featureId, boolean enabled) {
         enabledFeatures.put(featureId, enabled);
         syncWithFeatureManager(featureId, enabled);
+    }
+
+    // Todo; make sure to handle gracefully
+    private void syncWithFeatureManager(@NotNull FeatureId featureId, boolean enabled) {
+        FeatureManager.getInstance().updateFeatureState(featureId, enabled);
     }
 
     public boolean isFeatureEnabled(@NotNull FeatureId featureId) {
         return enabledFeatures.getOrDefault(featureId, false);
     }
 
-    // Todo; more graceful approach to saving
-    public void syncWithFeatureManager(@NotNull FeatureId featureId, boolean enabled) {
-        FeatureManager.getInstance().updateFeatureState(featureId, enabled);
-    }
-
     public Map<FeatureId, Boolean> getEnabledFeatures() {
         return Map.copyOf(enabledFeatures);
-    }
-
-    public Set<FeatureId> getFeatureIds() {
-        return Set.copyOf(enabledFeatures.keySet());
     }
 }
